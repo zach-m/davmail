@@ -82,6 +82,9 @@ public class DavGatewayX509TrustManager implements X509TrustManager {
 
     protected void userCheckServerTrusted(final X509Certificate[] x509Certificates) throws CertificateException {
         String acceptedCertificateHash = Settings.getProperty("davmail.server.certificate.hash");
+        // skip verification in case of a wild-card (promiscuous mode)
+        if ("*".equals(acceptedCertificateHash))
+            return;
         String certificateHash = getFormattedHash(x509Certificates[0]);
         // if user already accepted a certificate,
         if (acceptedCertificateHash != null && acceptedCertificateHash.length() > 0
